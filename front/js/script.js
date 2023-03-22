@@ -1,40 +1,29 @@
-
-
-
-
-
-//Fetcher l'url de l'api / recuperer le json - appeler l'objet produit
-
-
-
-
+//Fetcher l'url de l'api 
 fetch('http://localhost:3000/api/products')
-
-//Ne pas oublier de l'inserer dans la console.log, displayproduct ==> Prend le retour du json fecth.
-
-    .then(response => {
-        if(!response.ok){
-            throw new Error ("La réponse du serveur n'est pas ok"); 
-        } 
-        return response.json();
+    // Quand tu as la reponse, tu me le donnes en json.
+    .then ((res) => res.json())
+    //Resultat traité en json qui sera nommé "objetProduits"
+    .then ((objetProduits) => {
+        displayKanap (objetProduits);
     })
-    .then(data => {
-        console.log('Données récupérées avec succès', data);
-      })
-//inserer le catch dans le H1 5const list = document.getElementById("list");
-    .catch(error => {
-        console.error('Erreur lors de la récupération des données', error);
-    });
-    
-    
+    //
+    .catch ((err) => { 
+        document.querySelector(".titles").innerHTML = "<h1>Erreur 404, Oups une erreur est survenue</h1>";
+        console.log (err);
+});
+// Fonction d'affichage des produits sur la page d'accueil.
+function displayKanap (index) {
+    // Declaration de la variable pour pointer la zone d'article dans le html.
+    let zoneArticle = document.querySelector("#items");
+    // Boucle de recuperation des produits dans l'index.
+    for (let article of index) {
+        zoneArticle.innerHTML += `<a href="./product.html?id=${article._id}">
+        <article>
+          <img src="${article.imageUrl}" alt="${article.altTxt}">
+          <h3 class="productName">${article.name}</h3>
+          <p class="productDescription">${article.description}</p>
+        </article>
+      </a>`;
+    } 
+};
 
-
-
-
-//list.innerHTML += `<li><a href="#">Item ${list.children.length + 1}</a></li>`;°
-
-//Fonction ( nommer display product ) d'affichage des produits ( dom )
-
-/*
-Prendre l'index du tableau pour faire une boucle for let produits of index { a chaque fois que tu trouves une longueur i++} et le resultat de cette boucle : ( definir une variable let mazonedeproduit = document.queryselector) ("#items");   let article for index += href="./product.html?id=42"
-*/
