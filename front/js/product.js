@@ -11,13 +11,12 @@ console.log(recupId);
 
 // Appel à l'API pour récupérer les informations du produit en fonction de son id
 fetch(`http://localhost:3000/api/products/${recupId}`)
-  .then((res) => res.json()) // Convertit la réponse en format JSON
+  .then((res) => res.json()) 
   .then((objetProduits) => {
-    // Affiche le produit dans la page HTML avec la fonction displayKanap
     displayKanap(objetProduits);
   })
   .catch((err) => {
-    console.log(err); // Affiche une erreur s'il y a un problème avec l'appel API
+    console.log(err); 
   });
 
 function displayKanap(index) {
@@ -46,7 +45,6 @@ function displayKanap(index) {
   // Affichage du sélecteur de couleurs
   let zoneArticle4 = document.querySelector("#colors");
   if (zoneArticle4 !== null) {
-    // Ajout d'une balise select avec une option par couleur
     zoneArticle4.innerHTML = `<select name="color-select" id="color-select">
     <option value="">--SVP, choisissez une couleur --</option>
     </select>`;
@@ -57,4 +55,3 @@ function displayKanap(index) {
     }
   }
 }
-

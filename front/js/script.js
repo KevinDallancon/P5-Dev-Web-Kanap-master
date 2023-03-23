@@ -25,5 +25,5 @@ function displayKanap (index) {
         </article>
       </a>`;
     } 
-};
+};k
 
