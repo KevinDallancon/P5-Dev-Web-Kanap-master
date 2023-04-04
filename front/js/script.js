@@ -1,3 +1,4 @@
+
 //Fetcher l'url de l'api 
 fetch('http://localhost:3000/api/products')
     // Quand tu as la reponse, tu me le donnes en json.
@@ -12,11 +13,13 @@ fetch('http://localhost:3000/api/products')
         console.log (err);
 });
 // Fonction d'affichage des produits sur la page d'accueil.
-function displayKanap (index) {
+function displayKanap (resultatApi) {
+  console.log(resultatApi)
     // Declaration de la variable pour pointer la zone d'article dans le html.
     let zoneArticle = document.querySelector("#items");
     // Boucle de recuperation des produits dans l'index.
-    for (let article of index) {
+    for (let article of resultatApi) {
+      console.log(article)
         zoneArticle.innerHTML += `<a href="./product.html?id=${article._id}">
         <article>
           <img src="${article.imageUrl}" alt="${article.altTxt}">
@@ -25,5 +28,5 @@ function displayKanap (index) {
         </article>
       </a>`;
     } 
-};k
+};
 
