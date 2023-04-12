@@ -45,6 +45,11 @@ function displayKanap(resultatApi) {
       zoneArticleColor.innerHTML += colorOption;
     }
   }
+  function produitExisteDeja(id) {
+    let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
+    return monPanier.find((produit) => produit.id === id);
+  }
+
   let btn_envoyerPanier = document.querySelector("#addToCart");
   btn_envoyerPanier.addEventListener("click", () => {
     //Selection de l'id du formulaire
@@ -54,7 +59,7 @@ function displayKanap(resultatApi) {
     const choixForm = idForm.value;
     console.log(choixForm);
     // Selection de la quantité
-    let choixQte = document.querySelector("#quantity").value;
+    let choixQte = parseInt(document.querySelector("#quantity").value);
     // Selection de la couleur
     let choixColor = document.querySelector("#colors").value;
 
@@ -76,20 +81,30 @@ function displayKanap(resultatApi) {
         price: article.price,
       };
       console.log(monProduit);
-    
-      // Stockage de l'objet monproduit dans le local storage
+      
+      // Vérification si le produit existe déjà dans le panier
+      if (produitExisteDeja(monProduit.id)) {
       let monPanierStorage = localStorage;
       let monPanier = JSON.parse(monPanierStorage.getItem("monPanier"));
-      console.log(monPanier);
+      let produitExistant = monPanier.find((produit) => produit.id === monProduit.id);
+      produitExistant.quantite = parseInt(produitExistant.quantite) + choixQte;
+      localStorage.setItem("monPanier", JSON.stringify(monPanier));
+      alert("Ce produit est déjà dans votre panier donc la quantite a été mise à jours.");
+      // Mettre à jour la quantité du produit existant ici si besoin
+
+      } else {
+      // Stockage de l'objet monproduit dans le local storage
     
+      let monPanierStorage = localStorage;
+      let monPanier = JSON.parse(monPanierStorage.getItem("monPanier"));
+
       if (monPanier === null) {
         monPanier = [];
       }
-    
+      else {
       monPanier.push(monProduit);
       monPanierStorage.setItem("monPanier", JSON.stringify(monPanier));
-      alert("Votre produit a été ajouté au panier");
+      alert("Votre produit a été ajouté au panier");}
+      }
     }
-    // Ajoutez un console.log() pour afficher le contenu de monPanier après avoir mis à jour le localStorage
-    console.log("Contenu de monPanier après mise à jour :", JSON.stringify(monPanier));
   })}
