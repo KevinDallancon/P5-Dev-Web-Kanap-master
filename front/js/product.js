@@ -4,18 +4,19 @@ let idKanap = params.get("id");
 console.log(idKanap);
 
 fetch(`http://localhost:3000/api/products/${idKanap}`)
-  .then((res) => res.json()) 
+  .then((res) => res.json())
   .then((objetProduits) => {
     displayKanap(objetProduits);
   })
   .catch((err) => {
-    document.querySelector(".item__content").innerHTML = "<h1>Erreur 404, Oups une erreur est survenue</h1>";
-    console.log (err);
+    document.querySelector(".item__content").innerHTML =
+      "<h1>Erreur 404, Oups une erreur est survenue</h1>";
+    console.log(err);
   });
 
 function displayKanap(resultatApi) {
   let article = resultatApi;
-  console.log(resultatApi)
+  console.log(resultatApi);
   // Affichage de l'image du produit
   let zoneArticleImG = document.querySelector(".item__img");
   if (zoneArticleImG !== null) {
@@ -28,7 +29,9 @@ function displayKanap(resultatApi) {
         <p>Prix : <span id="price">${article.price}</span>€</p>`;
   }
   // Affichage de la description du produit
-  let zoneArticleDescription = document.querySelector(".item__content__description");
+  let zoneArticleDescription = document.querySelector(
+    ".item__content__description"
+  );
   if (zoneArticleDescription !== null) {
     zoneArticleDescription.innerHTML = `<p class="item__content__description__title">Description :</p>
         <p id="description">${article.description}</p>`;
@@ -45,22 +48,13 @@ function displayKanap(resultatApi) {
       zoneArticleColor.innerHTML += colorOption;
     }
   }
-  function produitExisteDeja(id) {
-    let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
-    return monPanier.find((produit) => produit.id === id);
-  }
 
-  let btn_envoyerPanier = document.querySelector("#addToCart");
-  btn_envoyerPanier.addEventListener("click", () => {
-    //Selection de l'id du formulaire
-    const idForm = document.querySelector("#colors");
+  function ajoutPanier() {
+    let idForm = document.querySelector("#colors");
     console.log(idForm);
-    // Mettre le choix de l'utilisateur dans une variable
-    const choixForm = idForm.value;
+    let choixForm = idForm.value;
     console.log(choixForm);
-    // Selection de la quantité
     let choixQte = parseInt(document.querySelector("#quantity").value);
-    // Selection de la couleur
     let choixColor = document.querySelector("#colors").value;
 
     if ((choixQte <= 0 || choixQte > 100) && choixColor == "") {
@@ -71,7 +65,6 @@ function displayKanap(resultatApi) {
     } else if (choixColor == "") {
       alert("Choisissez une couleur !");
     } else {
-      // Recuperation des données qui seront à stocker dans le panier
       let monProduit = {
         id: idKanap,
         colors: choixColor,
@@ -81,30 +74,24 @@ function displayKanap(resultatApi) {
         price: article.price,
       };
       console.log(monProduit);
-      
-      // Vérification si le produit existe déjà dans le panier
-      if (produitExisteDeja(monProduit.id)) {
-      let monPanierStorage = localStorage;
-      let monPanier = JSON.parse(monPanierStorage.getItem("monPanier"));
-      let produitExistant = monPanier.find((produit) => produit.id === monProduit.id);
-      produitExistant.quantite = parseInt(produitExistant.quantite) + choixQte;
-      localStorage.setItem("monPanier", JSON.stringify(monPanier));
-      alert("Ce produit est déjà dans votre panier donc la quantite a été mise à jours.");
-      // Mettre à jour la quantité du produit existant ici si besoin
-
+      let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
+      let produitExistant = monPanier.find(
+        (produit) => produit.id === monProduit.id
+      );
+      if (produitExistant) {
+        produitExistant.quantite += choixQte;
+        localStorage.setItem("monPanier", JSON.stringify(monPanier));
+        alert(
+          "Ce produit est déjà dans votre panier, la quantité a été mise à jour."
+        );
       } else {
-      // Stockage de l'objet monproduit dans le local storage
-    
-      let monPanierStorage = localStorage;
-      let monPanier = JSON.parse(monPanierStorage.getItem("monPanier"));
-
-      if (monPanier === null) {
-        monPanier = [];
-      }
-      else {
-      monPanier.push(monProduit);
-      monPanierStorage.setItem("monPanier", JSON.stringify(monPanier));
-      alert("Votre produit a été ajouté au panier");}
+        monPanier.push(monProduit);
+        localStorage.setItem("monPanier", JSON.stringify(monPanier));
+        alert("Votre produit a été ajouté au panier.");
       }
     }
-  })}
+  }
+
+  let btn_envoyerPanier = document.querySelector("#addToCart");
+  btn_envoyerPanier.addEventListener("click", ajoutPanier);
+}
