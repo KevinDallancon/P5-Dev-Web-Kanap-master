@@ -189,3 +189,52 @@ function deleteQuantite() {
 }
 
 deleteQuantite();
+
+//------------------GESTION FORMULAIRE ---------------------------------//
+
+const btnEnvoiFormulaire = document.querySelector("#order");
+console.log(btnEnvoiFormulaire);
+
+btnEnvoiFormulaire.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // Expression régulière pour valider l'e-mail
+  const regexMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Expression régulière pour valider le prénom et le nom
+  const regexPrenomNom = /^[A-Za-zÀ-ÿ]{3,20}$/;
+
+  // Récupérer les valeurs des champs de formulaire
+  const prenom = document.querySelector("#firstName").value;
+  const nom = document.querySelector("#lastName").value;
+  const adresse = document.querySelector("#address").value;
+  const ville = document.querySelector("#city").value;
+  const email = document.querySelector("#email").value;
+
+  // Stocker les valeurs dans le local storage
+  localStorage.setItem("Prenom", prenom);
+  console.log(prenom);
+  localStorage.setItem("Nom", nom);
+  console.log(nom);
+  localStorage.setItem("Adresse", adresse);
+  console.log(adresse);
+  localStorage.setItem("Ville", ville);
+  console.log(ville);
+  localStorage.setItem("E-mail", email);
+  console.log(email);
+
+  // Vérifier la validité des champs de formulaire
+  if (!prenom.match(regexPrenomNom)) {
+    alert(
+      "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le prénom !"
+    );
+  } else if (!nom.match(regexPrenomNom)) {
+    alert(
+      "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le nom !"
+    );
+  } else if (!email.match(regexMail)) {
+    alert("Veuillez saisir une adresse e-mail valide !");
+  }
+});
+
+//-------------------------------------------------------------------//
