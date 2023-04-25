@@ -62,6 +62,7 @@ function displayCart() {
     let price = document.createElement("p");
     contentDescription.appendChild(price);
     price.innerText = stock.price + " €";
+    
 
     // Créer un élément div pour les réglages du produit et l'ajouter à la div content
     let settings = document.createElement("div");
@@ -115,12 +116,29 @@ function totalArticle() {
     const Qte = parseInt(monPanier[q].quantite);
     calculQ.push(Qte);
     let totalQ = calculQ.reduce((a, b) => a + b, 0);
-    const prixTotalQ = document.getElementById("totalQuantity");
-    prixTotalQ.textContent = totalQ;
+    const totalQte = document.getElementById("totalQuantity");
+    totalQte.textContent = totalQ;
+ 
+
   }
 }
 totalArticle();
+
+function totalPrice() {
+  
+  let totalPrix = 0;
+
+  for (q = 0; q < monPanier.length; q++) {
+    const Qte = parseInt(monPanier[q].quantite);
+    const Prix = monPanier[q].price;
+    totalPrix += Qte * Prix;
+  }
+  const PrixQte = document.getElementById("totalPrice");
+  PrixQte.textContent = totalPrix;
+}
 // Modification de la quantité
+
+totalPrice();
 
 function modifierQuantite() {
   // Obtenir les éléments input avec la classe "itemQuantity"
@@ -198,43 +216,59 @@ console.log(btnEnvoiFormulaire);
 btnEnvoiFormulaire.addEventListener("click", (e) => {
   e.preventDefault();
 
-  // Expression régulière pour valider l'e-mail
-  const regexMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Expression régulière pour valider le prénom et le nom
-  const regexPrenomNom = /^[A-Za-zÀ-ÿ]{3,20}$/;
-
-  // Récupérer les valeurs des champs de formulaire
-  const prenom = document.querySelector("#firstName").value;
-  const nom = document.querySelector("#lastName").value;
-  const adresse = document.querySelector("#address").value;
-  const ville = document.querySelector("#city").value;
-  const email = document.querySelector("#email").value;
-
-  // Stocker les valeurs dans le local storage
-  localStorage.setItem("Prenom", prenom);
-  console.log(prenom);
-  localStorage.setItem("Nom", nom);
-  console.log(nom);
-  localStorage.setItem("Adresse", adresse);
-  console.log(adresse);
-  localStorage.setItem("Ville", ville);
-  console.log(ville);
-  localStorage.setItem("E-mail", email);
-  console.log(email);
 
   // Vérifier la validité des champs de formulaire
-  if (!prenom.match(regexPrenomNom)) {
-    alert(
-      "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le prénom !"
-    );
-  } else if (!nom.match(regexPrenomNom)) {
-    alert(
-      "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le nom !"
-    );
-  } else if (!email.match(regexMail)) {
-    alert("Veuillez saisir une adresse e-mail valide !");
+  function controleForm () {
+
+    let validation = true; 
+    // Expression régulière pour valider l'e-mail
+    const regexMail = /^[\w.-]+[@]{1}[\w.-]+[.]{1}[a-z]{2,63}$/g;
+
+    // Expression régulière pour valider le prénom et le nom
+    const regexPrenomNom = /^[A-Za-zÀ-ÿ]{3,20}$/;
+
+    // Creation d'une class
+    class contact {
+      constructor(){
+        this.prenom = document.querySelector("#firstName").value;
+        this.nom = document.querySelector("#lastName").value;
+        this.adresse = document.querySelector("#address").value;
+        this.ville = document.querySelector("#city").value;
+        this.email = document.querySelector("#email").value;
+      }
+    };
+
+    // Appel de l'instance de class formulaire pour créer l'objet
+
+    const formulaire = new contact();
+
+    if (!formulaire.prenom.match(regexPrenomNom)) {
+      validation = false;
+      alert(
+        "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le prénom !"
+      );
+    } else if (!formulaire.nom.match(regexPrenomNom)) {
+      validation = false;
+      alert(
+        "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le nom !"
+      );
+    } else if (!formulaire.email.match(regexMail)) {
+      validation = false;
+      alert("Veuillez saisir une adresse e-mail valide !");
+    } else {
+      
+      // Mettre l'objet formulaireValues dans le localStorage
+      localStorage.setItem("formulaire", JSON.stringify(formulaire));
+      localStorage.setItem("monPanier", JSON.stringify(monPanier));
+    }
+
+
+    return validation
+    
   }
+
+  console.log(controleForm());
+
 });
 
 //-------------------------------------------------------------------//
