@@ -1,5 +1,4 @@
 let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
-console.log(monPanier);
 
 // Définir les variables de protocole et de domaine pour les requêtes API
 let protocole = "http://";
@@ -7,182 +6,162 @@ let monDomaine = "localhost:3000/api/products/";
 
 // Fonction pour afficher le panier
 function displayCart() {
-  console.log(monPanier);
+  let totalPrix = 0;
   /// Boucle pour récupérer les produits stockés dans le panier (monPanier)
   for (const stock of monPanier) {
     // Créer l'URL pour récupérer les informations du produit
     let url = `${protocole}${monDomaine}${stock.id}`;
-    console.log(url);
+    // Fetcher l'url de l'api
+    fetch(url)
+      .then((res) => res.json())
+      .then((productData) => {
+        // Utilisez productData pour créer les éléments HTML ici
+        // Créer un élément article et le rajouter à la section cart__items
+        let section = document.querySelector("#cart__items");
+        let article = document.createElement("article");
+        section.appendChild(article);
+        // Définir les attributs de classe et de données pour l'article
+        article.setAttribute("class", "cart__item");
+        article.setAttribute("data-id", stock.id);
+        article.setAttribute("data-color", stock.colors);
 
-    // Créer un élément article et le rajouter à la section cart__items
-    let section = document.querySelector("#cart__items");
-    let article = document.createElement("article");
-    section.appendChild(article);
+        // Créer un élément div pour l'image du produit et l'ajouter à l'article
+        let div = document.createElement("div");
+        article.appendChild(div);
+        div.setAttribute("class", "cart__item__img");
 
-    // Définir les attributs de classe et de données pour l'article
-    article.setAttribute("class", "cart__item");
-    article.setAttribute("data-id", stock.id);
-    article.setAttribute("data-color", stock.colors);
+        // Créer un élément img pour l'image du produit, définir ses attributs et l'ajouter à la div
+        let img = document.createElement("img");
+        div.appendChild(img);
+        img.src = productData.imageUrl; // Utilisez l'image de l'API
+        img.setAttribute("alt", "Photographie d'un canapé");
 
-    // Créer un élément div pour l'image du produit et l'ajouter à l'article
-    let div = document.createElement("div");
-    article.appendChild(div);
-    div.setAttribute("class", "cart__item__img");
+        // Créer un élément div pour la description du produit et l'ajouter à l'article
+        let content = document.createElement("div");
+        article.appendChild(content);
+        content.setAttribute("class", "cart__item__content");
 
-    // Créer un élément img pour l'image du produit, définir ses attributs et l'ajouter à la div
-    let img = document.createElement("img");
-    div.appendChild(img);
-    img.src = stock.img;
-    img.setAttribute("alt", "Photographie d'un canapé");
+        // Créer un élément div pour le titre et les informations du produit et l'ajouter à la div content
+        let contentDescription = document.createElement("div");
+        content.appendChild(contentDescription);
+        contentDescription.setAttribute(
+          "class",
+          "cart__item__content__description"
+        );
 
-    // Créer un élément div pour la description du produit et l'ajouter à l'article
-    let content = document.createElement("div");
-    article.appendChild(content);
-    content.setAttribute("class", "cart__item__content");
+        let name = document.createElement("h2");
+        contentDescription.appendChild(name);
+        name.innerText = productData.name;
+        // Créer un élément p pour la couleur du produit, l'ajouter à la div contentDescription et définir son texte
+        let color = document.createElement("p");
+        contentDescription.appendChild(color);
+        color.innerText = stock.colors;
 
-    // Créer un élément div pour le titre et les informations du produit et l'ajouter à la div content
-    let contentDescription = document.createElement("div");
-    content.appendChild(contentDescription);
-    contentDescription.setAttribute(
-      "class",
-      "cart__item__content__description"
-    );
+        let price = document.createElement("p");
+        contentDescription.appendChild(price);
+        price.innerText = productData.price + " €";
 
-    // Créer un élément h2 pour le titre du produit, l'ajouter à la div contentDescription et définir son texte
-    let title = document.createElement("h2");
-    contentDescription.appendChild(title);
-    title.innerText = stock.name;
+        // Créer un élément div pour les réglages du produit et l'ajouter à la div content
+        let settings = document.createElement("div");
+        content.appendChild(settings);
+        settings.setAttribute("class", "cart__item__content__settings");
 
-    // Créer un élément p pour la couleur du produit, l'ajouter à la div contentDescription et définir son texte
-    let colors = document.createElement("p");
-    contentDescription.appendChild(colors);
-    colors.innerText = stock.colors;
+        // Créer un élément div pour la quantité et l'ajouter à la div settings
+        let settingQuantity = document.createElement("div");
+        settings.appendChild(settingQuantity);
+        settingQuantity.setAttribute(
+          "class",
+          "cart__item__content__settings__quantity"
+        );
 
-    // Créer un élément p pour le prix du produit, l'ajouter à la div contentDescription et définir son texte
-    let price = document.createElement("p");
-    contentDescription.appendChild(price);
-    price.innerText = stock.price + " €";
-    
+        // Créer un élément p pour afficher "Qté :", l'ajouter à la div settingQuantity et définir son texte
+        let quantity = document.createElement("p");
+        settingQuantity.appendChild(quantity);
+        quantity.innerText = "Qté : ";
 
-    // Créer un élément div pour les réglages du produit et l'ajouter à la div content
-    let settings = document.createElement("div");
-    content.appendChild(settings);
-    settings.setAttribute("class", "cart__item__content__settings");
+        // Créer un élément input pour la quantité du produit, l'ajouter à la div settingQuantity, définir sa classe
+        let quantityInput = document.createElement("input");
+        settingQuantity.appendChild(quantityInput);
+        quantityInput.setAttribute("class", "itemQuantity");
+        quantityInput.value = stock.quantite;
+        //
+        let settingDelete = document.createElement("div");
+        settings.appendChild(settingDelete);
+        settingDelete.setAttribute(
+          "class",
+          "cart__item__content__settings__delete"
+        );
+        //
+        let itemDelete = document.createElement("p");
+        settingDelete.appendChild(itemDelete);
+        itemDelete.setAttribute("class", "deleteItem");
+        itemDelete.innerHTML = "Supprimer";
+        // ------------- Total d'article ----------//
 
-    // Créer un élément div pour la quantité et l'ajouter à la div settings
-    let settingQuantity = document.createElement("div");
-    settings.appendChild(settingQuantity);
-    settingQuantity.setAttribute(
-      "class",
-      "cart__item__content__settings__quantity"
-    );
+        let calculQ = [];
 
-    // Créer un élément p pour afficher "Qté :", l'ajouter à la div settingQuantity et définir son texte
-    let quantity = document.createElement("p");
-    settingQuantity.appendChild(quantity);
-    quantity.innerText = "Qté : ";
+        for (q = 0; q < monPanier.length; q++) {
+          const Qte = parseInt(monPanier[q].quantite);
+          calculQ.push(Qte);
+        }
+        let totalQ = calculQ.reduce((a, b) => a + b, 0);
+        const totalQte = document.getElementById("totalQuantity");
+        totalQte.textContent = totalQ;
+        //---------------Calcul du prix total------//
 
-    // Créer un élément input pour la quantité du produit, l'ajouter à la div settingQuantity, définir sa classe
-    let quantityInput = document.createElement("input");
-    settingQuantity.appendChild(quantityInput);
-    quantityInput.setAttribute("class", "itemQuantity");
-    quantityInput.value = stock.quantite;
-    //
-    let settingDelete = document.createElement("div");
-    settings.appendChild(settingDelete);
-    settingDelete.setAttribute(
-      "class",
-      "cart__item__content__settings__delete"
-    );
-    //
-    let itemDelete = document.createElement("p");
-    settingDelete.appendChild(itemDelete);
-    itemDelete.setAttribute("class", "deleteItem");
-    itemDelete.innerHTML = "Supprimer";
-    console.log("stock.colors:", stock.colors);
-  }
-}
+        for (q = 0; q < monPanier.length; q++) {
+          const Qte = parseInt(stock.quantite);
+          console.log(Qte);
+          const Prix = productData.price;
+          console.log(Prix);
+        }
+        const PrixQte = document.getElementById("totalPrice");
+        PrixQte.textContent = totalPrix;
 
-// Appeler la fonction displayCart pour afficher le panier
-displayCart();
+        // ----- Modification de la quantité -----------//
+        let inputQ = document.querySelectorAll(".itemQuantity");
+        console.log(inputQ);
+        function modifierQuantite() {
+          for (let k = 0; k < inputQ.length; k++) {
+            inputQ[k].addEventListener("change", (event) => {
+              event.preventDefault();
+              let id = inputQ[k].closest("article").dataset.id;
+              let colors = inputQ[k].closest("article").dataset.color;
 
-console.log(monPanier);
+              let quantite = parseInt(event.target.value);
 
-// Calcul de la quantité total de mon panier
-function totalArticle() {
-  let calculQ = [];
-
-  for (q = 0; q < monPanier.length; q++) {
-    const Qte = parseInt(monPanier[q].quantite);
-    calculQ.push(Qte);
-    let totalQ = calculQ.reduce((a, b) => a + b, 0);
-    const totalQte = document.getElementById("totalQuantity");
-    totalQte.textContent = totalQ;
- 
-
-  }
-}
-totalArticle();
-
-function totalPrice() {
-  
-  let totalPrix = 0;
-
-  for (q = 0; q < monPanier.length; q++) {
-    const Qte = parseInt(monPanier[q].quantite);
-    const Prix = monPanier[q].price;
-    totalPrix += Qte * Prix;
-  }
-  const PrixQte = document.getElementById("totalPrice");
-  PrixQte.textContent = totalPrix;
-}
-// Modification de la quantité
-
-totalPrice();
-
-function modifierQuantite() {
-  // Obtenir les éléments input avec la classe "itemQuantity"
-  let inputQ = document.querySelectorAll(".itemQuantity");
-  // Récupérer le panier d'achat à partir du localStorage ou créer un tableau vide s'il n'existe pas
-  let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
-
-  for (let k = 0; k < inputQ.length; k++) {
-    inputQ[k].addEventListener("change", (event) => {
-      console.log("change event triggered");
-
-      let id = inputQ[k].closest("article").dataset.id;
-      console.log("id:", id); // Déplacez cette ligne ici.
-
-      let colors = inputQ[k].closest("article").dataset.color;
-      console.log("colors:", colors); // Déplacez cette ligne ici.
-
-      let quantite = parseInt(event.target.value);
-
-      let kanapFind = monPanier.find((item) => {
-        return item.id == id && item.colors == colors;
+              let kanapFind = monPanier.find((item) => {
+                return item.id == id && item.colors == colors;
+              });
+              console.log(kanapFind);
+              // Vérifier si l'article est trouvé
+              if (kanapFind && kanapFind.quantite >= 1) {
+                // Mettre à jour la quantité de l'article
+                kanapFind.quantite = quantite;
+                // Enregistrer les données modifiées dans le localStorage
+                localStorage.setItem("monPanier", JSON.stringify(monPanier));
+                // Recharger la page
+                window.location.reload();
+              } else {
+                // Afficher un message d'erreur si l'article n'est pas trouvé
+                alert("Erreur de modification de quantite");
+              }
+            });
+          }
+        }
+        modifierQuantite();
+      })
+      .catch((err) => {
+        console.error("Ceci est un message d'erreur", err);
       });
-
-      // Vérifier si l'article est trouvé
-      if (kanapFind) {
-        // Mettre à jour la quantité de l'article
-        console.log(kanapFind);
-        kanapFind.quantite = quantite;
-        // Enregistrer les données modifiées dans le localStorage
-        localStorage.setItem("monPanier", JSON.stringify(monPanier));
-        // Recharger la page
-        window.location.reload();
-      } else {
-        // Afficher un message d'erreur si l'article n'est pas trouvé
-        alert("Erreur");
-      }
-    });
   }
 }
 
-modifierQuantite();
+displayCart();
 
 function deleteQuantite() {
   let buttonDelete = document.querySelectorAll(".deleteItem");
+  console.log(buttonDelete);
   let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
 
   for (let x = 0; x < buttonDelete.length; x++) {
@@ -205,9 +184,7 @@ function deleteQuantite() {
     });
   }
 }
-
 deleteQuantite();
-
 //------------------GESTION FORMULAIRE ---------------------------------//
 
 const btnEnvoiFormulaire = document.querySelector("#order");
@@ -216,59 +193,85 @@ console.log(btnEnvoiFormulaire);
 btnEnvoiFormulaire.addEventListener("click", (e) => {
   e.preventDefault();
 
-
   // Vérifier la validité des champs de formulaire
-  function controleForm () {
-
-    let validation = true; 
+  function controleForm() {
     // Expression régulière pour valider l'e-mail
-    const regexMail = /^[\w.-]+[@]{1}[\w.-]+[.]{1}[a-z]{2,63}$/g;
-
+    const regexMail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/g;
     // Expression régulière pour valider le prénom et le nom
     const regexPrenomNom = /^[A-Za-zÀ-ÿ]{3,20}$/;
 
     // Creation d'une class
-    class contact {
-      constructor(){
-        this.prenom = document.querySelector("#firstName").value;
-        this.nom = document.querySelector("#lastName").value;
-        this.adresse = document.querySelector("#address").value;
-        this.ville = document.querySelector("#city").value;
+    class classContact {
+      constructor() {
+        this.firstName = document.querySelector("#firstName").value;
+        this.lastName = document.querySelector("#lastName").value;
+        this.address = document.querySelector("#address").value;
+        this.city = document.querySelector("#city").value;
         this.email = document.querySelector("#email").value;
       }
-    };
-
+    }
     // Appel de l'instance de class formulaire pour créer l'objet
 
-    const formulaire = new contact();
+    const contact = new classContact();
+    console.log(contact);
 
-    if (!formulaire.prenom.match(regexPrenomNom)) {
-      validation = false;
+    if (contact.firstName.trim() === "") {
+      alert("Le champ 'Prénom' est obligatoire.");
+    } else if (!regexPrenomNom.test(contact.firstName)) {
       alert(
         "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le prénom !"
       );
-    } else if (!formulaire.nom.match(regexPrenomNom)) {
-      validation = false;
+    } else if (contact.lastName.trim() === "") {
+      alert("Le champ 'Nom' est obligatoire.");
+    } else if (!regexPrenomNom.test(contact.lastName)) {
       alert(
         "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le nom !"
       );
-    } else if (!formulaire.email.match(regexMail)) {
-      validation = false;
+    } else if (contact.address.trim() === "") {
+      alert("Le champ 'Adresse' est obligatoire.");
+    } else if (contact.city.trim() === "") {
+      alert("le champ 'Ville' est obligatoire");
+    } else if (contact.email.trim() === "") {
+      alert("Le champ 'Email' est obligatoire.");
+    } else if (!regexMail.test(contact.email)) {
       alert("Veuillez saisir une adresse e-mail valide !");
     } else {
-      
+      alert("votre commande est envoyé");
+
       // Mettre l'objet formulaireValues dans le localStorage
-      localStorage.setItem("formulaire", JSON.stringify(formulaire));
+      localStorage.setItem("contact", JSON.stringify(contact));
       localStorage.setItem("monPanier", JSON.stringify(monPanier));
+
+      let products = [];
+      monPanier.forEach((produit) => {
+        products.push(produit.id);
+      });
+      console.log(products);
+
+      // Envoyer la requête POST au serveur
+      fetch(" http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ contact, products }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Traiter la réponse du serveur (par exemple, afficher un message de succès)
+          alert("La réponse du serveur est ok");
+          console.log(data);
+          // Enregistrer l'identifiant de commande dans le localStorage
+          localStorage.setItem("orderId", data.orderId);
+          // Rediriger l'utilisateur vers la page de confirmation
+          window.location.href = "confirmation.html";
+        })
+        .catch((error) => {
+          // Traiter les erreurs éventuelles
+          alert("La réponse du serveur est ko");
+        });
     }
-
-
-    return validation
-    
   }
-
-  console.log(controleForm());
-
+  e.preventDefault();
+  controleForm();
 });
-
-//-------------------------------------------------------------------//

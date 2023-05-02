@@ -7,6 +7,7 @@ fetch(`http://localhost:3000/api/products/${idKanap}`)
   .then((res) => res.json())
   .then((objetProduits) => {
     displayKanap(objetProduits);
+    console.log(objetProduits);
   })
   .catch((err) => {
     document.querySelector(".item__content").innerHTML =
@@ -67,14 +68,12 @@ function displayKanap(resultatApi) {
     } else {
       let monProduit = {
         id: idKanap,
-        colors: choixColor,
         quantite: choixQte,
-        name: article.name,
-        img: article.imageUrl,
-        price: article.price,
+        colors: choixColor,
       };
       console.log(monProduit);
       let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
+      console.log(monPanier)
       let produitExistant = monPanier.find(
         (produit) => produit.id === monProduit.id
       );
