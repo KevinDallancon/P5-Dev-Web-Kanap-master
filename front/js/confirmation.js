@@ -1,4 +1,4 @@
-const orderId = localStorage.getItem("orderId")
+const orderId = localStorage.getItem("orderId");
 console.log(orderId);
 
 let numeroCommande = document.getElementById("orderId");

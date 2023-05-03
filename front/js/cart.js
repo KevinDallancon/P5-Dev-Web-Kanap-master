@@ -7,6 +7,7 @@ let monDomaine = "localhost:3000/api/products/";
 // Fonction pour afficher le panier
 function displayCart() {
   let totalPrix = 0;
+  let totalQ = 0;
   /// Boucle pour récupérer les produits stockés dans le panier (monPanier)
   for (const stock of monPanier) {
     // Créer l'URL pour récupérer les informations du produit
@@ -96,31 +97,54 @@ function displayCart() {
         settingDelete.appendChild(itemDelete);
         itemDelete.setAttribute("class", "deleteItem");
         itemDelete.innerHTML = "Supprimer";
-        // ------------- Total d'article ----------//
 
-        let calculQ = [];
+        //--------- total des articles et du prix total ---///
+        const Qte = parseInt(stock.quantite);
+        console.log(Qte);
+        totalQ += Qte;
+        console.log(totalQ);
+        totalPrix += productData.price * Qte;
 
-        for (q = 0; q < monPanier.length; q++) {
-          const Qte = parseInt(monPanier[q].quantite);
-          calculQ.push(Qte);
-        }
-        let totalQ = calculQ.reduce((a, b) => a + b, 0);
+        // Afficher le total des articles et le prix total
         const totalQte = document.getElementById("totalQuantity");
         totalQte.textContent = totalQ;
-        //---------------Calcul du prix total------//
-
-        for (q = 0; q < monPanier.length; q++) {
-          const Qte = parseInt(stock.quantite);
-          console.log(Qte);
-          const Prix = productData.price;
-          console.log(Prix);
-        }
         const PrixQte = document.getElementById("totalPrice");
         PrixQte.textContent = totalPrix;
 
+        // ---------- Supprimer une quantité -----------//
+
+        function deleteQuantite() {
+          let buttonDelete = document.querySelectorAll(".deleteItem");
+          console.log(buttonDelete);
+          let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
+
+          for (let x = 0; x < buttonDelete.length; x++) {
+            buttonDelete[x].addEventListener("click", function () {
+              let id = buttonDelete[x].closest("article").dataset.id;
+              console.log("id:", id);
+
+              let colors = buttonDelete[x].closest("article").dataset.color;
+              console.log("colors:", colors);
+
+              // Trouvez et supprimez l'article du panier monPanier
+              monPanier = monPanier.filter((item) => {
+                return !(item.id === id && item.colors === colors);
+              });
+
+              // Enregistrer les données modifiées dans le localStorage
+              localStorage.setItem("monPanier", JSON.stringify(monPanier));
+              // Recharger la page
+              window.location.reload();
+            });
+          }
+        }
+        deleteQuantite();
+
         // ----- Modification de la quantité -----------//
+
         let inputQ = document.querySelectorAll(".itemQuantity");
         console.log(inputQ);
+
         function modifierQuantite() {
           for (let k = 0; k < inputQ.length; k++) {
             inputQ[k].addEventListener("change", (event) => {
@@ -159,32 +183,6 @@ function displayCart() {
 
 displayCart();
 
-function deleteQuantite() {
-  let buttonDelete = document.querySelectorAll(".deleteItem");
-  console.log(buttonDelete);
-  let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
-
-  for (let x = 0; x < buttonDelete.length; x++) {
-    buttonDelete[x].addEventListener("click", function () {
-      let id = buttonDelete[x].closest("article").dataset.id;
-      console.log("id:", id);
-
-      let colors = buttonDelete[x].closest("article").dataset.color;
-      console.log("colors:", colors);
-
-      // Trouvez et supprimez l'article du panier monPanier
-      monPanier = monPanier.filter((item) => {
-        return !(item.id === id && item.colors === colors);
-      });
-
-      // Enregistrer les données modifiées dans le localStorage
-      localStorage.setItem("monPanier", JSON.stringify(monPanier));
-      // Recharger la page
-      window.location.reload();
-    });
-  }
-}
-deleteQuantite();
 //------------------GESTION FORMULAIRE ---------------------------------//
 
 const btnEnvoiFormulaire = document.querySelector("#order");
