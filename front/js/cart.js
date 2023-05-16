@@ -140,20 +140,26 @@ function displayCart() {
         }
         deleteQuantite();
 
-        // ----- Modification de la quantité -----------//
-
+        // Récupération de tous les éléments du DOM avec la classe "itemQuantity" dans le tableau inputQ
         let inputQ = document.querySelectorAll(".itemQuantity");
         console.log(inputQ);
 
+        // Définition de la fonction modifierQuantite
         function modifierQuantite() {
+          // Boucle pour traiter tous les éléments de inputQ
           for (let k = 0; k < inputQ.length; k++) {
+            // Ajout d'un écouteur d'événement sur chaque élément de inputQ pour détecter un changement
             inputQ[k].addEventListener("change", (event) => {
+              // Annulation de l'action par défaut du navigateur lors du déclenchement de l'événement
               event.preventDefault();
+              // Récupération de l'id et de la couleur du produit associé à l'input modifié
               let id = inputQ[k].closest("article").dataset.id;
               let colors = inputQ[k].closest("article").dataset.color;
 
+              // Récupération de la nouvelle quantité
               let quantite = parseInt(event.target.value);
 
+              // Recherche du produit dans le panier
               let kanapFind = monPanier.find((item) => {
                 return item.id == id && item.colors == colors;
               });
@@ -211,7 +217,6 @@ btnEnvoiFormulaire.addEventListener("click", (e) => {
     // Appel de l'instance de class formulaire pour créer l'objet
 
     const contact = new classContact();
-    console.log(contact);
 
     if (contact.firstName.trim() === "") {
       alert("Le champ 'Prénom' est obligatoire.");
@@ -261,8 +266,9 @@ btnEnvoiFormulaire.addEventListener("click", (e) => {
           console.log(data);
           // Enregistrer l'identifiant de commande dans le localStorage
           localStorage.setItem("orderId", data.orderId);
+          console.log(data.orderId);
           // Rediriger l'utilisateur vers la page de confirmation
-          window.location.href = "confirmation.html";
+          window.location.href = `./confirmation.html?orderId=${data.orderId}`;
         })
         .catch((error) => {
           // Traiter les erreurs éventuelles
@@ -270,6 +276,5 @@ btnEnvoiFormulaire.addEventListener("click", (e) => {
         });
     }
   }
-  e.preventDefault();
   controleForm();
 });

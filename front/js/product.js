@@ -72,21 +72,27 @@ function displayKanap(resultatApi) {
         colors: choixColor,
       };
       console.log(monProduit);
+      // récupère panier si présent dans le localStorage
       let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
       console.log(monPanier)
-      let produitExistant = monPanier.find(
-        (produit) => produit.id === monProduit.id
-      );
-      if (produitExistant) {
-        produitExistant.quantite += choixQte;
-        localStorage.setItem("monPanier", JSON.stringify(monPanier));
-        alert(
-          "Ce produit est déjà dans votre panier, la quantité a été mise à jour."
+
+      if (monPanier) {
+        let produitExistant = monPanier.find(
+          (produit) => produit.id === monProduit.id && produit.colors === monProduit.colors
         );
-      } else {
-        monPanier.push(monProduit);
-        localStorage.setItem("monPanier", JSON.stringify(monPanier));
-        alert("Votre produit a été ajouté au panier.");
+        // si produit déja présent dans le panier
+        if (produitExistant) {
+          produitExistant.quantite += choixQte;
+          localStorage.setItem("monPanier", JSON.stringify(monPanier));
+          // Sauvegarde et sérialise
+          alert(
+            "Ce produit est déjà dans votre panier, la quantité a été mise à jour."
+          );
+        } else {
+          monPanier.push(monProduit);
+          localStorage.setItem("monPanier", JSON.stringify(monPanier));
+          alert("Votre produit a été ajouté au panier.");
+        }
       }
     }
   }
