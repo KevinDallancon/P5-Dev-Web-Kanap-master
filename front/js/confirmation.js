@@ -15,14 +15,3 @@ function Displayconf() {
 
 // Appel de la fonction Displayconf
 Displayconf();
-
-
-// Rappel du contexte
-// Specification technique
-// Demo directe sur le site
-// Passage en revu des grandes fonctions :
-// Fetch
-// Comment jouer sur la boucle for ? 
-// Le panier => Les fonctions  
-// Recuperation de l'order ID 
-// Clear 

@@ -1,5 +1,5 @@
 let params = new URL(document.location).searchParams;
-console.log(params);
+
 let idKanap = params.get("id");
 console.log(idKanap);
 
@@ -7,7 +7,6 @@ fetch(`http://localhost:3000/api/products/${idKanap}`)
   .then((res) => res.json())
   .then((objetProduits) => {
     displayKanap(objetProduits);
-    console.log(objetProduits);
   })
   .catch((err) => {
     document.querySelector(".item__content").innerHTML =
@@ -52,7 +51,6 @@ function displayKanap(resultatApi) {
 
   function ajoutPanier() {
     let idForm = document.querySelector("#colors");
-    console.log(idForm);
     let choixForm = idForm.value;
     console.log(choixForm);
     let choixQte = parseInt(document.querySelector("#quantity").value);
@@ -74,11 +72,12 @@ function displayKanap(resultatApi) {
       console.log(monProduit);
       // récupère panier si présent dans le localStorage
       let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
-      console.log(monPanier)
+      console.log(monPanier);
 
       if (monPanier) {
         let produitExistant = monPanier.find(
-          (produit) => produit.id === monProduit.id && produit.colors === monProduit.colors
+          (produit) =>
+            produit.id === monProduit.id && produit.colors === monProduit.colors
         );
         // si produit déja présent dans le panier
         if (produitExistant) {

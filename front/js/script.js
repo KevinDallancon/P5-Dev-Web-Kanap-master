@@ -19,7 +19,6 @@ function displayKanap(resultatApi) {
   let zoneArticle = document.querySelector("#items");
   // Boucle de recuperation des produits dans l'index.
   for (let article of resultatApi) {
-    console.log(article);
     zoneArticle.innerHTML += `<a href="./product.html?id=${article._id}">
         <article>
           <img src="${article.imageUrl}" alt="${article.altTxt}">

@@ -100,9 +100,7 @@ function displayCart() {
 
         //--------- total des articles et du prix total ---///
         const Qte = parseInt(stock.quantite);
-        console.log(Qte);
         totalQ += Qte;
-        console.log(totalQ);
         totalPrix += productData.price * Qte;
 
         // Afficher le total des articles et le prix total
@@ -115,7 +113,6 @@ function displayCart() {
 
         function deleteQuantite() {
           let buttonDelete = document.querySelectorAll(".deleteItem");
-          console.log(buttonDelete);
           let monPanier = JSON.parse(localStorage.getItem("monPanier")) || [];
 
           for (let x = 0; x < buttonDelete.length; x++) {
@@ -142,7 +139,6 @@ function displayCart() {
 
         // Récupération de tous les éléments du DOM avec la classe "itemQuantity" dans le tableau inputQ
         let inputQ = document.querySelectorAll(".itemQuantity");
-        console.log(inputQ);
 
         // Définition de la fonction modifierQuantite
         function modifierQuantite() {
@@ -192,7 +188,6 @@ displayCart();
 //------------------GESTION FORMULAIRE ---------------------------------//
 
 const btnEnvoiFormulaire = document.querySelector("#order");
-console.log(btnEnvoiFormulaire);
 
 btnEnvoiFormulaire.addEventListener("click", (e) => {
   e.preventDefault();
