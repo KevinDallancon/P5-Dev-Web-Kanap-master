@@ -194,10 +194,18 @@ btnEnvoiFormulaire.addEventListener("click", (e) => {
 
   // Vérifier la validité des champs de formulaire
   function controleForm() {
-    // Expression régulière pour valider l'e-mail
+    // Expressions régulières pour valider les champs
     const regexMail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/g;
-    // Expression régulière pour valider le prénom et le nom
-    const regexPrenomNom = /^[A-Za-zÀ-ÿ]{3,20}$/;
+    const regexPrenomNom = /^[A-Za-zÀ-ÿ]{3,20}$/; // Pas de chiffres
+    const regexAddress = /^[A-Za-zÀ-ÿ0-9\s#,-]{1,100}$/; // Chiffres autorisés
+    const regexCity = /^[A-Za-zÀ-ÿ\s-]{1,50}$/; // Pas de chiffres
+
+    // Message d'erreur pour les champs
+    const firstNameError = document.querySelector("#firstNameErrorMsg");
+    const lastNameError = document.querySelector("#lastNameErrorMsg");
+    const addressError = document.querySelector("#addressErrorMsg");
+    const cityError = document.querySelector("#cityErrorMsg");
+    const emailError = document.querySelector("#emailErrorMsg");
 
     // Creation d'une class
     class classContact {
@@ -210,30 +218,43 @@ btnEnvoiFormulaire.addEventListener("click", (e) => {
       }
     }
     // Appel de l'instance de class formulaire pour créer l'objet
-
     const contact = new classContact();
 
-    if (contact.firstName.trim() === "") {
-      alert("Le champ 'Prénom' est obligatoire.");
-    } else if (!regexPrenomNom.test(contact.firstName)) {
-      alert(
-        "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le prénom !"
-      );
-    } else if (contact.lastName.trim() === "") {
-      alert("Le champ 'Nom' est obligatoire.");
-    } else if (!regexPrenomNom.test(contact.lastName)) {
-      alert(
-        "Veuillez respecter une longueur minimale de 3 caractères et une longueur maximale de 20 caractères pour le nom !"
-      );
-    } else if (contact.address.trim() === "") {
-      alert("Le champ 'Adresse' est obligatoire.");
-    } else if (contact.city.trim() === "") {
-      alert("le champ 'Ville' est obligatoire");
-    } else if (contact.email.trim() === "") {
-      alert("Le champ 'Email' est obligatoire.");
-    } else if (!regexMail.test(contact.email)) {
-      alert("Veuillez saisir une adresse e-mail valide !");
-    } else {
+    // Creation d'un tableau pour stocker les messages d'erreurs
+    let errorMsg = [];
+
+    if (
+      contact.firstName.trim() === "" ||
+      !regexPrenomNom.test(contact.firstName)
+    ) {
+      firstNameError.innerHTML = "Merci de renseigner un prénom valide";
+      errorMsg.push(firstNameError.innerHTML);
+    }
+
+    if (
+      contact.lastName.trim() === "" ||
+      !regexPrenomNom.test(contact.lastName)
+    ) {
+      lastNameError.innerHTML = "Merci de renseigner un nom de famille valide";
+      errorMsg.push(lastNameError.innerHTML);
+    }
+
+    if (contact.address.trim() === "" || !regexAddress.test(contact.address)) {
+      addressError.innerHTML = "Merci de renseigner une adresse valide";
+      errorMsg.push(addressError.innerHTML);
+    }
+
+    if (contact.city.trim() === "" || !regexCity.test(contact.city)) {
+      cityError.innerHTML = "Merci de renseigner une ville valide";
+      errorMsg.push(cityError.innerHTML);
+    }
+
+    if (contact.email.trim() === "" || !regexMail.test(contact.email)) {
+      emailError.innerHTML = "Veuillez saisir une adresse e-mail valide !";
+      errorMsg.push(emailError.innerHTML);
+    }
+    // Si aucune erreur dans le tableau errorMsg alors tu peux envoyer la commande
+    if (errorMsg.length === 0) {
       alert("votre commande est envoyé");
 
       // Mettre l'objet formulaireValues dans le localStorage
@@ -259,9 +280,6 @@ btnEnvoiFormulaire.addEventListener("click", (e) => {
           // Traiter la réponse du serveur (par exemple, afficher un message de succès)
           alert("La réponse du serveur est ok");
           console.log(data);
-          // Enregistrer l'identifiant de commande dans le localStorage
-          localStorage.setItem("orderId", data.orderId);
-          console.log(data.orderId);
           // Rediriger l'utilisateur vers la page de confirmation
           window.location.href = `./confirmation.html?orderId=${data.orderId}`;
         })

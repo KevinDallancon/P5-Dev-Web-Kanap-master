@@ -3,11 +3,13 @@ function Displayconf() {
   // Récupération de l'élément HTML avec l'id "orderId"
   const orderId = document.getElementById("orderId");
 
-  // Récupération de l'orderId du localStorage et insertion de cette valeur dans l'élément HTML récupéré précédemment
-  orderId.innerText = localStorage.getItem("orderId");
+  let param = new URL(document.location).searchParams;
+  console.log(param);
+  // Récupération de l'orderId de l'url et insertion de cette valeur dans l'élément HTML récupéré précédemment
+  orderId.innerText = param.get("orderId");
 
   // Affichage de l'orderId dans la console
-  console.log(localStorage.getItem("orderId"));
+  console.log(param.get("orderId"));
 
   // Effacement de toutes les données stockées dans le localStorage
   localStorage.clear();

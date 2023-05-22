@@ -1,5 +1,5 @@
 let params = new URL(document.location).searchParams;
-
+console.log(params);
 let idKanap = params.get("id");
 console.log(idKanap);
 
